@@ -5,8 +5,18 @@
         <link rel="stylesheet" href="{% static 'styles.css' %}">
     </head>
     
+    <nav>
+        <ul>
+            <li><a href="{% url 'home' %}">Quote of the Day</a></li>
+            <li><a href="{% url 'about' %}">About</a></li>
+            <li><a href="{% url 'show_all' %}">Show All</a></li>
+        </ul>
+ 
+ 
+    </nav>
+
     <body>
-        
+
     {% block content %}
     {% endblock %} 
  

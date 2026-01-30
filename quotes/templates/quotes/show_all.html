@@ -4,6 +4,23 @@
 {% block content %}
 <div>
 <h1>show all</h1>
+
+<h1>All quotes</h1>
+<ul>
+<!--- Loops through all of the quotes to be printed -->
+{% for quote in all_quotes %}
+    <li>{{ quote }}</li>
+{% endfor %}
+</ul>
+
+<h1>All images</h1>
+<ul>
+<!--- Loops through all of the images to be shown -->
+{% for image in all_images %}
+    <li><img src="{{ image }}" alt="Dennis Hopper"></li>
+{% endfor %}
+</ul>
+
 </div>
  
  
