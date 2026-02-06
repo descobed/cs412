@@ -1,0 +1,32 @@
+body {
+    background-color: rgb(214, 212, 211);
+    margin: 0;
+    padding: 0;
+    font-family: monospace;
+    font-size: large;
+    text-align: center;
+}
+
+h1 {
+    color: rgb(75, 61, 51);
+    text-align: center;
+}
+
+form {
+    text-align: center;
+}
+
+nav ul{
+    list-style-type: none;
+    padding: 10px;
+    margin-top: 0px;  
+    width: 100%;
+    background-color: rgb(179 168 156);
+    color: rgb(75, 61, 51);
+}
+
+nav ul li {
+    display: inline;
+    margin-right: 20px;
+    font-size: large;
+}

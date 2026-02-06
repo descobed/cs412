@@ -1,0 +1,22 @@
+{% load static %}
+<html>
+    <head>
+        <link rel="stylesheet" href="{% static 'custom_styles.css' %}">
+    </head>
+    
+    <nav>
+        <ul>
+            <li><a href="{% url 'home' %}">Home</a></li>
+            <li><a href="{% url 'order' %}">Order</a></li>
+        </ul>
+
+    </nav>
+
+    <body>
+
+    {% block content %}
+    {% endblock %} 
+ 
+    </body>
+
+</html>
