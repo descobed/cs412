@@ -1,10 +1,12 @@
 from django.db import models
+#Diego Escobedo Ruiz/ mini_insta model for CS412
 
 
 
 # Create your models here.
 
 class Profile(models.Model):
+    '''Model for a mini_insta profile'''
 
     username = models.TextField(blank=True)
     display_name = models.TextField(blank=True)

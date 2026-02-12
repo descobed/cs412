@@ -1,0 +1,19 @@
+{% extends 'mini_insta/base.html' %}
+<!-- Diego Escobedo Ruiz / Displays ALL profiles -->
+{% block content %}
+<title>All profiles</title>
+
+<h1>All profiles</h1>
+<ul>
+    <!-- Loop through the database for all profiles. The username is also a link to the individual-->
+    {% for profile in profiles %}
+        <li><a href="{% url 'show_profile' profile.pk %}"> username: {{ profile.username }}</a><br>
+            display name: {{ profile.display_name }}<br>
+
+            <img src="{{ profile.profile_image_url }}" alt="Profile picture of {{ profile.username }}" width="100"><br>
+            <hr> 
+        </li>
+
+    {% endfor %}
+</ul>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends 'mini_insta/base.html' %}
+<!-- Diego Escobedo Ruiz / Displays A SINGLE profile-->
+
+{% block content %}
+<!-- takes the given profile and displays all of the information for that profile -->
+<title>{{ profile.display_name }}</title>
+<ul>
+    username: {{ profile.username }}<br>
+    display name: {{ profile.display_name }}<br>
+
+    <img src="{{ profile.profile_image_url }}" alt="Profile picture of {{ profile.username }}"><br>
+    {{ profile.bio_text }}
+
+
+</ul>
+
+
+{% endblock %}
