@@ -30,3 +30,8 @@ nav ul li {
     margin-right: 20px;
     font-size: large;
 }
+
+img {
+    width: 300px;
+    height: auto;
+}

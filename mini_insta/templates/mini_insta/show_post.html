@@ -1,0 +1,17 @@
+<!-- Diego Escobedo Ruiz / 2/18/26  / mini_insta 2 -->
+<!-- Shows all images associated with a post -->
+
+{% extends 'mini_insta/base.html' %}
+
+{% block content %}
+<title>Post {{ post.pk }}</title>
+
+<p>{{ post.caption }}</p>
+
+{% for photo in post.get_all_photos %}
+    <div>
+        <img src="{{ photo.image_url }}" alt="Image for post {{ post.pk }}">
+    </div>
+{% endfor %}
+
+{% endblock %}

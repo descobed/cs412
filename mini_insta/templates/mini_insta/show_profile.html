@@ -11,8 +11,23 @@
     <img src="{{ profile.profile_image_url }}" alt="Profile picture of {{ profile.username }}"><br>
     {{ profile.bio_text }}
 
-
 </ul>
+
+<div>
+    <h2>Posts:</h2>
+    {% for post in profile.get_all_posts %}
+        <div>
+            <a href="{% url 'show_post' post.pk %}">View Post</a>
+            <p>{{ post.caption }}</p>
+            {% if post.get_all_photos %}
+                <img src="{{ post.get_all_photos.0.image_url }}" alt="Image for post {{ post.pk }}">
+            {% else %}
+                <p>No image for this post.</p>
+            {% endif %}
+        </div>
+    {% endfor %}
+
+</div>
 
 
 {% endblock %}
