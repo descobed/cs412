@@ -1,0 +1,32 @@
+{% extends 'mini_insta/base.html' %}
+<!-- Diego Escobedo Ruiz / 2/18/26 / mini_insta 2 -->
+{% block content %}
+ 
+ 
+<h2>Making a new post!</h2>
+ 
+<h3><a href="{% url 'show_profile' profile.pk %}">Back to profile</a></h3> 
+<form method = 'POST'>
+ 
+{% csrf_token %}
+    <table>
+    <!--based on the object-->
+    {% for field in form %}
+    <tr>
+        <th>{{field.name}}</th>
+        <td>{{field}}</td>
+    </tr>
+    
+    {% endfor %}
+    
+    <tr>
+        <td></td>
+        <td>
+            <input type='submit' name = 'make a post' value= 'Make a post'>
+        </td>
+    </tr>
+    </table>
+</form>
+ 
+ 
+{% endblock %}

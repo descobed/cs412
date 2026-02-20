@@ -11,6 +11,7 @@
     <img src="{{ profile.profile_image_url }}" alt="Profile picture of {{ profile.username }}"><br>
     {{ profile.bio_text }}
 
+    <h3><a href="{% url 'create_post_form' profile.pk %}">Create a post</a></h3>
 </ul>
 
 <div>
@@ -19,6 +20,7 @@
         <div>
             <a href="{% url 'show_post' post.pk %}">View Post</a>
             <p>{{ post.caption }}</p>
+            <!--shows the first photo-->
             {% if post.get_all_photos %}
                 <img src="{{ post.get_all_photos.0.image_url }}" alt="Image for post {{ post.pk }}">
             {% else %}
@@ -26,6 +28,8 @@
             {% endif %}
         </div>
     {% endfor %}
+
+    
 
 </div>
 

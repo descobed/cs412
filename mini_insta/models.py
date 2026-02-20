@@ -26,7 +26,7 @@ class Profile(models.Model):
 
 class Post(models.Model):
     '''Model for a mini_insta post'''
-
+    
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
     caption = models.TextField(blank=True)
     timestamp = models.DateTimeField(auto_now=True)
@@ -35,17 +35,19 @@ class Post(models.Model):
         '''returns a string of the post'''
         return f'Post by {self.caption}'
     
-
     def get_all_photos(self):
-        '''returns a list of all photos in this post'''
+        '''returns all photos, for single post pages'''
         photos = Photo.objects.filter(post=self)
         return photos
 
 class Photo(models.Model):
     '''Model for a mini_insta photo'''
 
+    #If the parent post is deleted, delete this also
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    #the url
     image_url = models.URLField(blank=True)
+    #timestamp!
     timestamp = models.DateTimeField(auto_now=True)
 
     def __str__(self):
