@@ -6,7 +6,11 @@
 <h2>Search!</h2>
 
 <form method="get" action="{% url 'search_results' profile.pk %}">
-    <input type="text" name="q" placeholder="Search for profiles or posts..." required>
-    <button type="submit">Search</button>
+	<label for="q">Search profiles and posts:</label>
+	<input type="text" id="q" name="q" placeholder="Enter search text" required>
+	<button type="submit">Search</button>
+</form>
+
+
 
 {% endblock %}

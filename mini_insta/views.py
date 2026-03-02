@@ -128,28 +128,52 @@ class ShowFeedDetailView(DetailView):
     template_name = 'mini_insta/show_feed.html'
     context_object_name = 'profile'
 
-class SearchView(ListView):
+class SearchView(DetailView):
     #new
-    #new homework asks to use search_results here but I don't understand why a not search at the moment
+    #Uses a DetailView / I don't understand why we'd want a list view here since we care more for the user's primary key
+
     model = Profile
     template_name = 'mini_insta/search.html'
     context_object_name = 'profile'
 
-class SearchResultsView(ListView):
+class SearchResultsView(DetailView):
     #new
+    #once again I don't see the use of a listview here? 
     model = Profile
     template_name = 'mini_insta/search_results.html'
-    context_object_name = 'profiles'
+    context_object_name = 'profile'
+
+    def dispatch(self, request, *args, **kwargs):
+        if self.queryset.get is None:
+            return reverse('search', kwargs={'pk': self.kwargs['pk']})
+        else:
+            return super().dispatch(request, *args, **kwargs)
 
     def get_profiles(self):
         '''Returns the list of profiles matching the search query.'''
-        query = self.request.GET.get('q')
+        query = self.request.GET.get('q', '').strip()
+        if not query:
+            return Profile.objects.none()
         return Profile.objects.filter(display_name__icontains=query)
-    
+
+    def get_queryset(self):
+        return super().get_queryset().filter(pk=self.kwargs['pk'])
+
+
     def get_posts(self):
         '''Returns the list of posts matching the search query.'''
-        query = self.request.GET.get('q')
+        query = self.request.GET.get('q', '').strip()
+        if not query:
+            return Post.objects.none()
         return Post.objects.filter(caption__icontains=query)
+
+    def get_context_data(self, **kwargs):
+        '''Add search result querysets to context.'''
+        context = super().get_context_data(**kwargs)
+        context['search_results'] = self.get_profiles()
+        context['search_results_posts'] = self.get_posts()
+        context['query'] = self.request.GET.get('q', '').strip()
+        return context
 
 
 
