@@ -1,0 +1,12 @@
+<!--diego escobedo ruiz -->
+{% extends 'mini_insta/base.html' %}
+
+{% block content %}
+<h2>Deleting post {{ post.pk }}</h2>
+<h3><a href="{% url 'show_post' post.pk %}">Back to post</a></h3>
+<form method="post">
+    {% csrf_token %}
+    <p>Are you sure you want to delete this post?</p>
+    <button type="submit">Delete Post</button>
+</form>
+{% endblock %}

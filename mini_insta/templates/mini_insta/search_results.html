@@ -1,0 +1,28 @@
+<!-- diego Escobedo Ruiz-->
+
+{% extends 'mini_insta/base.html' %}
+
+{% block content %}
+    <h1>Search Results for "{{ request.GET.q }}"</h1>
+
+    {% if search_results %}
+        <ul>
+            {% for profile in search_results %}
+                <li><a href="{% url 'show_profile' profile.pk %}">{{ profile.display_name }} ({{ profile.username }})</a></li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No profiles found matching "{{ request.GET.q }}".</p>
+    {% endif %}
+
+    {% if search_results_posts %}
+        <h2>Posts:</h2>
+        <ul>
+            {% for post in search_results_posts %}
+                <li><a href="{% url 'show_post' post.pk %}">{{ post.caption }}</a> by {{ post.profile.display_name }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No posts found matching "{{ request.GET.q }}".</p>
+    {% endif %}
+{% endblock %}

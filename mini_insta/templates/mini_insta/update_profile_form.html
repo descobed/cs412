@@ -1,0 +1,18 @@
+<!-- created for hw 5 / Diego Escobedo Ruiz -->
+
+{% extends 'mini_insta/base.html' %}
+
+{% block content %}
+<!-- form to update the users profile. Still uses a url for the photo-->  
+<h2>Update Profile</h2>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Update</button>
+  </form>
+
+<h3><a href="{% url 'show_profile' profile.pk %}">Cancel</a></h3>
+
+
+
+{% endblock %}

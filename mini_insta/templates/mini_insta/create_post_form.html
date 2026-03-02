@@ -6,26 +6,24 @@
 <h2>Making a new post!</h2>
  
 <h3><a href="{% url 'show_profile' profile.pk %}">Back to profile</a></h3> 
-<form method = 'POST'>
+
+<form method = 'POST' enctype="multipart/form-data" >
  
-{% csrf_token %}
-    <table>
-    <!--based on the object-->
-    {% for field in form %}
-    <tr>
-        <th>{{field.name}}</th>
-        <td>{{field}}</td>
-    </tr>
+    {% csrf_token %}
     
-    {% endfor %}
+<table>
     
+        <!--basedon the object-->
+    {{form.as_table}}
     <tr>
         <td></td>
         <td>
-            <input type='submit' name = 'make a post' value= 'Make a post'>
+
+            <input type='submit' value= 'Make a post'>
         </td>
     </tr>
-    </table>
+    
+</table>
 </form>
  
  

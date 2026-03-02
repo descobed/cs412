@@ -1,0 +1,13 @@
+<!-- Update a post / diego escobedo ruiz-->
+{% extends 'mini_insta/base.html' %}
+
+{% block content %}
+<h2>Updating post {{ post.pk }}</h2>
+<h3><a href="{% url 'show_post' post.pk %}">Back to post</a></h3>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    {{ form.get_absolute_url }}
+    <button type="submit">Update Post</button>
+</form>
+{% endblock %}

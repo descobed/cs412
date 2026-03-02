@@ -1,0 +1,12 @@
+<!-- diego escobedo ruiz-->
+
+{% extends 'mini_insta/base.html' %}
+
+{% block content %}
+<h2>Search!</h2>
+
+<form method="get" action="{% url 'search_results' profile.pk %}">
+    <input type="text" name="q" placeholder="Search for profiles or posts..." required>
+    <button type="submit">Search</button>
+
+{% endblock %}

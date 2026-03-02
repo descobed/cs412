@@ -1,0 +1,14 @@
+<!-- Diego Escobedo Ruiz -->
+{% extends 'mini_insta/base.html' %}
+
+{% block content %}
+<h2>Followers!</h2>
+{% for follow in profile.get_followers %}
+    <div>
+        <a href="{% url 'show_profile' follow.follower_profile.pk %}">{{ follow.follower_profile }}</a>
+    </div>
+{% empty %}
+    <p>No one is following you  </p>
+{% endfor %}
+
+{% endblock %}

@@ -4,14 +4,51 @@
 {% extends 'mini_insta/base.html' %}
 
 {% block content %}
+
+
 <title>Post {{ post.pk }}</title>
+
 
 <p>{{ post.caption }}</p>
 
+<!-- Shows images if you've either uploaded a url or a file -->
 {% for photo in post.get_all_photos %}
-    <div>
-        <img src="{{ photo.image_url }}" alt="Image for post {{ post.pk }}">
-    </div>
+    {% if photo.get_image_url %}
+        <div>
+            <img src="{{ photo.get_image_url }}" alt="Image for post {{ post.pk }}">
+        </div>
+    {% endif %}
 {% endfor %}
+
+<!-- likes break -->
+{% if post.get_all_likes %}
+    <h3>Likes: {{ post.get_num_likes }}</h3>
+    {% for like in post.get_all_likes %}
+        <div>
+            <p>By: {{ like.profile.display_name }}</p>
+        </div>
+    {% endfor %}
+{% else %}
+    <p>No likes yet.</p>
+{% endif %}
+
+
+<!-- comments break -->
+{% if post.get_all_comments %}
+    <h3>Comments:</h3>
+    {% for comment in post.get_all_comments %}
+        <div>
+            <p>{{ comment.text }}</p>
+            <p>By: {{ comment.profile.display_name }}</p>
+            <hr>
+
+        </div>
+    {% endfor %}
+{% else %}
+    <p>No comments yet.</p>
+{% endif %}
+<!-- updates -->
+<a href="{% url 'update_post_form' post.pk %}">Update Post</a><br>
+<a href="{% url 'delete_post_form' post.pk %}">Delete Post</a
 
 {% endblock %}

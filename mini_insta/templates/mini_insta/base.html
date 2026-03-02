@@ -12,6 +12,8 @@
             <!-- Only show on specific pages, lets them make a post and inherit the profile context -->
             {% if profile.pk %}
                 <li><a href="{% url 'create_post_form' profile.pk %}">Create Post</a></li>
+                <li><a href="{% url 'show_feed' profile.pk %}">My Feed</a></li>
+                <li><a href="{% url 'search' profile.pk %}">Search</a></li>
             {% endif %}
         </ul>
 

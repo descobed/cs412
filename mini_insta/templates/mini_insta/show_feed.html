@@ -1,0 +1,18 @@
+<!-- Diego Escobedo Ruiz-->
+
+{% extends 'mini_insta/base.html' %}
+
+{% block content %}
+<h2>Feed!</h2>
+<a href="{% url 'show_profile' profile.pk %}">Back to profile</a><br>
+
+{% for post in profile.get_post_feed %}
+    <hr>
+    <div>        
+        <a href="{% url 'show_post' post.pk %}">{{ post }}</a> by {{ post.profile.display_name }}
+    </div>
+{% empty %}
+    <p>Not following anyone. Kinda odd  </p>
+{% endfor %}
+
+{% endblock %}
