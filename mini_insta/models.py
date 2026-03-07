@@ -1,5 +1,6 @@
 from django.db import models
 from django.urls import reverse
+from django.contrib.auth.models import User
 #Diego Escobedo Ruiz/ mini_insta model for CS412
 
 
@@ -15,6 +16,13 @@ class Profile(models.Model):
     bio_text = models.TextField(blank=True)
     join_date = models.DateTimeField(auto_now=True) 
 
+    #auth / NEW
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    
+
+    def get_user(self):
+        '''returns the user associated with this profile'''
+        return self.user
 
     def __str__(self):
         '''returns a string of the user'''

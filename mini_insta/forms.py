@@ -35,3 +35,25 @@ class CreatePostForm(forms.ModelForm):
         model = Post
         #should inherit the user/pk
         fields = ['caption']
+
+
+class CreateProfileForm(forms.ModelForm):
+    '''New: User creates their profiles'''
+
+    image_url = forms.URLField(required=False)
+    
+    class Meta:
+        model = Profile
+        fields = ['username', 'display_name', 'bio_text']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.instance and self.instance.pk:
+            self.fields['image_url'].initial = self.instance.profile_image_url
+
+    def save(self, commit=True):
+        profile = super().save(commit=False)
+        profile.profile_image_url = self.cleaned_data.get('image_url', '')
+        if commit:
+            profile.save()
+        return profile

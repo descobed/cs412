@@ -8,12 +8,29 @@
     
     <nav>
         <ul>
+            <!--Not logged in-->
             <li><a href="{% url 'show_all_profiles' %}">All profiles</a></li>
-            <!-- Only show on specific pages, lets them make a post and inherit the profile context -->
-            {% if profile.pk %}
-                <li><a href="{% url 'create_post_form' profile.pk %}">Create Post</a></li>
-                <li><a href="{% url 'show_feed' profile.pk %}">My Feed</a></li>
-                <li><a href="{% url 'search' profile.pk %}">Search</a></li>
+            <!-- Logged in -->
+            {% if request.user.is_authenticated %}
+                <li>Logged in as: {{ request.user.username }}</li>
+                <li><a href="{% url 'show_profile' %}">My Profile</a></li>
+                {% with user_profile=request.user.profile_set.first %}
+                    {% if user_profile %}
+                        <li><a href="{% url 'create_post_form' %}">Create Post</a></li>
+                        <li><a href="{% url 'show_feed' %}">My Feed</a></li>
+                        <li><a href="{% url 'search' %}">Search</a></li>
+                    {% endif %}
+                {% endwith %}
+                <li>
+                    <form action="{% url 'logout' %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit">Logout</button>
+                    </form>
+                </li>
+            {% else %}
+                <li>Not logged in</li>
+                <li><a href="{% url 'login' %}">Login</a></li>
+                <li><a href="{% url 'create_profile_form' %}">Create Profile</a></li>
             {% endif %}
         </ul>
 

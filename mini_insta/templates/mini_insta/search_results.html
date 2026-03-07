@@ -5,12 +5,12 @@
 {% block content %}
 
     <h1>Search Results for "{{ query }}"</h1>
-    <p><a href="{% url 'search' profile.pk %}">Back to search</a></p>
+    <p><a href="{% url 'search' %}">Back to search</a></p>
     <!-- if they have results display them all-->
     {% if search_results %}
         <ul>
             {% for profile in search_results %}
-                <li><a href="{% url 'show_profile' profile.pk %}">{{ profile.display_name }} ({{ profile.username }})</a></li>
+                <li><a href="{% url 'show_profile_by_pk' profile.pk %}">{{ profile.display_name }} ({{ profile.username }})</a></li>
             {% endfor %}
         </ul>
     {% else %}

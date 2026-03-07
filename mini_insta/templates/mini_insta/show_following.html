@@ -6,7 +6,8 @@
 
 {% for follow in profile.get_following %}
     <div>
-        <a href="{% url 'show_profile' follow.profile.pk %}">{{ follow.profile }}</a>
+        <!-- needs pk to go to prof-->
+        <a href="{% url 'show_profile_by_pk' follow.profile.pk %}">{{ follow.profile }}</a>
     </div>
 {% empty %}
     <p>You are not following anyone yet </p>

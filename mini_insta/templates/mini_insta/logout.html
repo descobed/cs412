@@ -1,0 +1,9 @@
+<!-- Diego Escobedo Ruiz / hw6 -->
+{% extends 'mini_insta/base.html' %}
+
+<form action="{% url 'logout' %}" method="post">
+    {% csrf_token %}
+    <button type="submit">Logout</button>
+</form>
+
+{% block content %}

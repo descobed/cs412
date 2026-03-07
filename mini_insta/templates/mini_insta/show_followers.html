@@ -4,8 +4,9 @@
 {% block content %}
 <h2>Followers!</h2>
 {% for follow in profile.get_followers %}
+    <!-- needs pk to go to prof-->
     <div>
-        <a href="{% url 'show_profile' follow.follower_profile.pk %}">{{ follow.follower_profile }}</a>
+        <a href="{% url 'show_profile_by_pk' follow.follower_profile.pk %}">{{ follow.follower_profile }}</a>
     </div>
 {% empty %}
     <p>No one is following you  </p>

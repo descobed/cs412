@@ -5,7 +5,7 @@
 {% block content %}
 <h2>Search!</h2>
 
-<form method="get" action="{% url 'search_results' profile.pk %}">
+<form method="get" action="{% url 'search_results' %}">
 	<label for="q">Search profiles and posts:</label>
 	<input type="text" id="q" name="q" placeholder="Enter search text" required>
 	<button type="submit">Search</button>

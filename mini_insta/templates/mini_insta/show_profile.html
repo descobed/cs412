@@ -7,14 +7,17 @@
 <ul>
     username: {{ profile.username }}<br>
     display name: {{ profile.display_name }}<br>
-    <a href="{% url 'show_followers' profile.pk %}">Followers: {{ profile.get_num_followers }}</a><br>
-    <a href="{% url 'show_following' profile.pk %}">Following: {{ profile.get_num_following }}</a><br>
+    <a href="{% url 'show_followers' %}">Followers: {{ profile.get_num_followers }}</a><br>
+    <a href="{% url 'show_following' %}">Following: {{ profile.get_num_following }}</a><br>
 
     <img src="{{ profile.profile_image_url }}" alt="Profile picture of {{ profile.username }}"><br>
     {{ profile.bio_text }}
 
-    <h3><a href="{% url 'create_post_form' profile.pk %}">Create a post</a></h3>
-    <h3><a href="{% url 'update_profile_form' profile.pk %}">Update Profile</a></h3>
+    {% if request.user.is_authenticated and request.user == profile.user %}
+    <!-- only show the create option if its YOUR profile -->
+    <h3><a href="{% url 'create_post_form' %}">Create a post</a></h3>
+    <h3><a href="{% url 'update_profile_form' %}">Update Profile</a></h3>
+    {% endif %}
 </ul>
 
 <div>

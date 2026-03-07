@@ -47,8 +47,10 @@
 {% else %}
     <p>No comments yet.</p>
 {% endif %}
-<!-- updates -->
-<a href="{% url 'update_post_form' post.pk %}">Update Post</a><br>
-<a href="{% url 'delete_post_form' post.pk %}">Delete Post</a
+<!-- updates / also check if its YOUR post to update -->
+{% if request.user.is_authenticated and request.user == post.profile.user %}
+    <a href="{% url 'update_post_form' post.pk %}">Update Post</a><br>
+    <a href="{% url 'delete_post_form' post.pk %}">Delete Post</a>
+{% endif %}
 
 {% endblock %}
