@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'hw',
     'quotes',
     'restaurant',
-    'mini_insta' #new
+    'mini_insta',
+    'voter_analytics' #new
 ]
 
 MIDDLEWARE = [

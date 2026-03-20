@@ -1,0 +1,24 @@
+<!--Diego Escobedo Ruiz-->
+{% extends 'voter_analytics/base.html' %}
+
+{% block content %}
+
+    <div class="row">
+            {% include 'voter_analytics/search.html' %}
+    </div>
+    <h1>Graphs</h1>
+    <!-- Add your graph content here -->
+    
+    <div class = "container">
+        <div class = "row">
+            {{graph_div_pie|safe}}
+        </div>
+        <div class = "row">
+            {{graph_div_bar_election_count|safe}}
+        </div>
+        <div class = "row">
+            {{graph_div_bar_dob|safe}}
+        </div> 
+    </div>
+
+{% endblock %}
