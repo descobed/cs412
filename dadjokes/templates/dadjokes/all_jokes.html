@@ -1,0 +1,16 @@
+<!-- Diego Escobedo Ruiz-->
+
+{% extends 'dadjokes/base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+    {%for joke in jokes %}
+        <h1>{{ joke }}</h1>
+        <hr>
+    {% empty %}
+        <h1>No jokes found</h1>
+    {% endfor %}
+
+{% endblock %}

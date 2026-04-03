@@ -42,7 +42,9 @@ INSTALLED_APPS = [
     'quotes',
     'restaurant',
     'mini_insta',
-    'voter_analytics' #new
+    'voter_analytics',
+    'dadjokes',
+    'rest_framework' #new
 ]
 
 MIDDLEWARE = [
@@ -142,3 +144,10 @@ CS_DEPLOYMENT_HOSTNAME = 'cs-webapps.bu.edu'
 if socket.gethostname() == CS_DEPLOYMENT_HOSTNAME:
     STATIC_URL = '/descobed/static/'
     MEDIA_URL = '/descobed/media/'
+
+
+#new REST FRAMEWORK
+REST_FRAMEWORK = {
+  'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+  'PAGE_SIZE': 10
+}   

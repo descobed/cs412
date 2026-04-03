@@ -1,0 +1,14 @@
+<!-- Diego Escobedo Ruiz-->
+
+{% extends 'dadjokes/base.html' %}
+
+{% load static %}
+
+
+<!--Almost too random! With only 5 jokes there's lots of repeats-->
+
+{% block content %}
+        <h1>{{ joke.text }}</h1>
+        <hr>
+        <img src="{{ picture.url }}" alt="photo !">
+{% endblock %}
