@@ -21,6 +21,7 @@ from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api-auth/', include('rest_framework.urls')),  # DRF browsable API login/logout
     path('hw/', include('hw.urls')),
     path('quotes/', include('quotes.urls')),
     path('restaurant/', include('restaurant.urls')), 

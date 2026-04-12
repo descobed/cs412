@@ -1,4 +1,6 @@
 from django.shortcuts import render
+import os
+from django.conf import settings
 
 
 from .models import *
@@ -13,8 +15,17 @@ from .forms import UpdateProfileForm
 from .forms import CreateProfileForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth import login
+from django.contrib.auth import authenticate, login
+from django.contrib.auth import get_user_model
 
+#new ---
+from rest_framework import generics
+from .serializers import *
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.authtoken.models import Token
 # Create your views here.
 
 class ShowAllProfiles(ListView):
@@ -257,8 +268,6 @@ class SearchResultsView(LoginRequiredMixin, DetailView):
         '''Redirect to login'''
         return reverse('login')
 
-
-#new
 class CreateProfileView(CreateView):
     model = Profile
     form_class = CreateProfileForm
@@ -286,4 +295,174 @@ class CreateProfileView(CreateView):
     def get_success_url(self):
         '''Show_profile after success'''
         return reverse('show_profile')
+    
+
+#NEW
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.authentication import TokenAuthentication
+from .models import Todo
+from .serializers import TodoSerializer
+
+class TodoUpdate(generics.UpdateAPIView):
+    '''API view for updating a todo'''
+    queryset = Todo.objects.all()
+    serializer_class = TodoSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    authentication_classes = [TokenAuthentication]
+
+    def perform_update(self, serializer):
+        '''Checks that the todo being updated belongs to the logged in user'''
+        if self.request.user == serializer.instance.profile.user:
+            serializer.save()
+
+class TodoDelete(generics.DestroyAPIView):
+    '''API view for deleting a todo'''
+    queryset = Todo.objects.all()
+    serializer_class = TodoSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    authentication_classes = [TokenAuthentication]
+
+    def perform_destroy(self, instance):
+        '''Checks that the todo being deleted belongs to the logged in user'''
+        if self.request.user == instance.profile.user:
+            instance.delete()
+
+class TodoListCreateAPIView(generics.ListCreateAPIView):
+    '''API view for listing and creating todos'''
+    queryset = Todo.objects.all()
+    serializer_class = TodoSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    authentication_classes = [TokenAuthentication]
+
+    def perform_create(self, serializer):
+        '''Sets the profile to the logged in user'''
+        serializer.save(profile=self.request.user.profile)
+
+
+#This creates a new DJANGO user, not a profile, but I believe that is the desired output
+
+class UserRegistrationView(generics.CreateAPIView):
+    serializer_class = UserSerializer
+
+class UserLoginView(APIView):
+    def post(self, request):
+        '''User login and auth with tokens'''
+        username = request.data.get('username')
+        password = request.data.get('password')
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            token, _ = Token.objects.get_or_create(user=user)
+            profile = Profile.objects.filter(user=user).first()
+            profile_id = profile.pk 
+            return Response({'token': token.key, 'profile_id': profile_id}, status=status.HTTP_200_OK)
+        return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+class DevLoginAPIView(APIView):
+    '''DEBUG-only login that creates/uses a test user and returns auth token.'''
+
+    def post(self, request):
+        if not settings.DEBUG:
+            return Response({'error': 'Not available'}, status=status.HTTP_404_NOT_FOUND)
+
+        username = os.getenv('MINI_INSTA_DEV_USERNAME', 'mini_insta_test')
+        password = os.getenv('MINI_INSTA_DEV_PASSWORD', 'mini_insta_test_pass')
+
+        UserModel = get_user_model()
+        user, created = UserModel.objects.get_or_create(
+            username=username,
+            defaults={'email': f'{username}@example.com'}
+        )
+
+        if created or not user.has_usable_password():
+            user.set_password(password)
+            user.save()
+
+        profile, _ = Profile.objects.get_or_create(
+            user=user,
+            defaults={
+                'username': username,
+                'display_name': 'MiniInsta Test User',
+                'bio_text': 'Auto-created test profile for DEBUG mode.',
+            },
+        )
+
+        if not profile.username:
+            profile.username = username
+            if not profile.display_name:
+                profile.display_name = 'MiniInsta Test User'
+            profile.save()
+
+        token, _ = Token.objects.get_or_create(user=user)
+        return Response(
+            {
+                'token': token.key,
+                'profile_id': profile.pk,
+                'debug_login': True,
+            },
+            status=status.HTTP_200_OK,
+        )
+
+
+#NEW for API (names all single)
+#register
+class RegisterAPIView(generics.ListCreateAPIView):
+    '''API view for registering a new user'''
+    queryset = Profile.objects.all()
+    serializer_class = UserSerializer
+
+
+
+#Profile 
+class ProfileListAPIView(generics.ListCreateAPIView):
+    '''API view: List'''
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+class ProfileDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    '''API view: detail'''
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+class ProfileFeedAPIView(generics.ListAPIView):
+    """API view for a given profile's feed"""
+    queryset = Profile.objects.all()
+    serializer_class = PostSerializer # showing posts
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get_queryset(self):
+        """gonna set posts to only
+           Uses the get_post_feed function from the model """
+        feed = Profile.objects.get(pk=self.kwargs['pk']).get_post_feed()
+        return feed
+
+#post
+class PostListAPIView(generics.ListCreateAPIView):
+    '''API view: List '''
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def perform_create(self, serializer):
+        '''Attaches the logged-in user's profile to the new post'''
+        profile = Profile.objects.get(user=self.request.user)
+        serializer.save(profile=profile)
+
+class PostDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    '''API view: detail'''
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+#photo
+#comment
+#like
+#follow
 

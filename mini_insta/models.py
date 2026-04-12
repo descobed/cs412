@@ -156,3 +156,14 @@ class Like(models.Model):
     def __str__(self):
         '''returns a string of the like'''
         return f'{self.profile} likes {self.post}'
+
+#new for api views and testing 
+class Todo(models.Model):
+    '''Model for a todo item belonging to a profile'''
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    text = models.TextField()
+    completed = models.BooleanField(default=False)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.profile}: {self.text[:50]}'
