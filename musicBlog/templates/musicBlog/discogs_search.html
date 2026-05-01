@@ -1,0 +1,99 @@
+{% extends 'musicBlog/base.html' %}
+
+{% block content %}
+<title>Search</title>
+
+<section class="page-shell">
+
+    <header class="card">
+        <h1>Search</h1>
+        <form method="get">
+            <input id="q" type="text" name="q" value="{{ q }}" placeholder="Try: Radiohead" required style="margin-top:8px;">
+            <button type="submit">Search</button>
+        </form>
+    </header>
+
+    {% if q %}
+
+    <section class="card">
+        <h2>Artists:</h2>
+        {% if artist_error %}
+        <p>{{ artist_error }}</p>
+        {% elif artist_results %}
+        <ul class="stack-list">
+            {% for item in artist_results %}
+            <li>
+                <strong>{{ item.title }}</strong>
+                {% if item.genre %}{{ item.genre|join:", " }}{% endif %}
+                <form method="post" action="{% url 'musicBlog:save_and_view_artist' %}" style="display:inline;">
+                    {% csrf_token %}
+                    <input type="hidden" name="artist_name" value="{{ item.title }}">
+                    <input type="hidden" name="genre" value="{{ item.genre|join:', ' }}">
+                    <button type="submit">View all albums by this artist</button>
+                </form>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>No artists found.</p>
+        {% endif %}
+    </section>
+
+    <section class="card">
+        <h2>Albums:</h2>
+        {% if album_error %}
+        <p>{{ album_error }}</p>
+        {% elif album_results %}
+        <ul class="stack-list">
+            {% for item in album_results %}
+            <li>
+                <strong>{{ item.title }}</strong>
+                {% if item.year %}({{ item.year }}){% endif %}
+                {% if item.genre %}{{ item.genre|join:", " }}{% endif %}
+                <form method="post" action="{% url 'musicBlog:save_and_view_album' %}" style="display:inline;">
+                    {% csrf_token %}
+                    <input type="hidden" name="title" value="{{ item.title }}">
+                    <input type="hidden" name="year" value="{{ item.year }}">
+                    <input type="hidden" name="genre" value="{{ item.genre|join:', ' }}">
+                    <button type="submit">View album page and reviews</button>
+                </form>
+                {% if request.user.is_authenticated %}
+                <form method="post" action="{% url 'musicBlog:save_and_review' %}" style="display:inline;">
+                    {% csrf_token %}
+                    <input type="hidden" name="title" value="{{ item.title }}">
+                    <input type="hidden" name="year" value="{{ item.year }}">
+                    <input type="hidden" name="genre" value="{{ item.genre|join:', ' }}">
+                    <button type="submit">Review this album</button>
+                </form>
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>No albums found.</p>
+        {% endif %}
+    </section>
+
+    <section class="card">
+        <h2>Songs:</h2>
+        {% if song_error %}
+        <p>{{ song_error }}</p>
+        {% elif song_results %}
+        <ul class="stack-list">
+            {% for item in song_results %}
+            <li>
+                <strong>{{ item.title }}</strong>
+                {% if item.year %}({{ item.year }}){% endif %}
+                {% if item.genre %}{{ item.genre|join:", " }}{% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>No songs found.</p>
+        {% endif %}
+    </section>
+
+    {% endif %}
+
+</section>
+{% endblock %}

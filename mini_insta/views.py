@@ -18,6 +18,9 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import get_user_model
 
+import discogs_client
+
+
 #new ---
 from rest_framework import generics
 from .serializers import *
@@ -27,6 +30,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.authtoken.models import Token
 # Create your views here.
+
+d = discogs_client.Client('ExampleApplication/0.1')
 
 class ShowAllProfiles(ListView):
     model = Profile
@@ -55,6 +60,13 @@ class ProfileDetailView(LoginRequiredMixin, DetailView):
     def get_login_url(self) -> str:
         '''Return to login'''
         return reverse('login')
+
+    def get_context_data(self, **kwargs):
+        '''Return the context data for the profile detail view, including the user's posts.'''
+        context = super().get_context_data(**kwargs)
+        profile = self.get_object()
+        context['posts'] = Post.objects.filter(profile=profile).order_by('-created_at')
+        return context
 
 
 class PublicProfileDetailView(DetailView):

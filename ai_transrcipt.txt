@@ -1,0 +1,87 @@
+/*
+ * SESSION TRANSCRIPT — April 9, 2026
+ * ─────────────────────────────────────────────────────────────────────────────
+ *
+ * Q: What am I missing for populating a webpage with Mini_insta profile data?
+ *    How would I implement authentication?
+ *
+ * A: Several things were identified as missing:
+ *
+ *    Profile Data Issues (this file):
+ *    - profile_picture_url was never rendered — profilePicture style existed
+ *      but no <Image> component was used.
+ *    - api/profiles/ returns a list, not a single object. setProfile(data)
+ *      was assigning an array to a Profile type; needed data[0] instead.
+ *    - No Authorization header was being sent with the fetch, so the backend
+ *      had no way to identify the logged-in user.
+ *
+ *    Authentication — entirely missing:
+ *    - No login screen existed.
+ *    - No token storage (expo-secure-store was already installed).
+ *    - No AuthContext to share token state across screens.
+ *    - No protected route logic to redirect unauthenticated users.
+ *    - No Authorization header on any API calls.
+ *
+ * Q: Can you implement these changes?
+ *
+ * A: All changes were implemented:
+ *
+ *    1. context/AuthContext.tsx (new)
+ *       - Stores auth token in SecureStore (persists across app restarts).
+ *       - Exposes token, isLoaded, login(), and logout() via React context.
+ *       - login() POSTs credentials to api-token-auth/ and saves the token.
+ *
+ *    2. app/(tabs)/login.tsx (replaced placeholder)
+ *       - Full login form with username/password fields.
+ *       - Shows loading indicator and error message on failure.
+ *       - On success, redirects to /(tabs)/home.
+ *
+ *    3. app/(tabs)/_layout.tsx
+ *       - Imports useAuth and redirects to login when isLoaded && !token.
+ *       - Registers login as a hidden tab screen (no tab bar button/bar).
+ *
+ *    4. app/_layout.tsx
+ *       - Wraps RootLayoutNav with <AuthProvider> so auth state is global.
+ *
+ *    5. app/(tabs)/home.tsx (this file)
+ *       - Added Image import to render profile_picture_url.
+ *       - Fixed fetch response handling: Array.isArray(data) ? data[0] : data.
+ *       - Added Authorization: Token ${token} header to the fetch call.
+ *
+ * Q: Are there currently any errors?
+ *
+ * A: No errors found across the entire workspace.
+ *
+
+What I changed:
+
+Added a DEBUG-only backend endpoint that auto-creates/uses a test user and returns a real auth token:
+views.py
+
+Exposed that endpoint in URLs:
+urls.py
+
+Updated React auth to call the debug endpoint when test mode is enabled:
+AuthContext.tsx
+
+Added a visible notice on the login screen when test mode is active:
+react/MiniInsta/app/(tabs)/login.tsx/login.tsx)
+
+
+Can you provide a summary of the changes made today:
+
+
+Here's a summary of all changes made today:
+
+context/AuthContext.tsx
+
+Added FORCE_TEST_LOGIN flag — reads the EXPO_PUBLIC_ALWAYS_ALLOW_LOGIN env var.
+When enabled, login() calls api/dev-login/ instead of api/login/, bypassing credential checks.
+app/(tabs)/login.tsx/login.tsx)
+
+Added FORCE_TEST_LOGIN flag and test credential constants (mini_insta_test / mini_insta_test_pass).
+Shows a green "Test mode: login always succeeds." banner when active.
+.env (new file)
+
+Created with EXPO_PUBLIC_ALWAYS_ALLOW_LOGIN=true to enable test mode.
+

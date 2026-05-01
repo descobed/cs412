@@ -1,0 +1,67 @@
+{% extends 'musicBlog/base.html' %}
+
+{% block content %}
+
+<title>Create Profile</title>
+
+<section class="page-shell">
+
+<header class="card">
+    <h1>Create Profile</h1>
+    <p align="center">Set up your account details to start sharing and discovering music.</p>
+</header>
+
+<section class="card">
+    <form method="post" class="form-grid">
+        {% csrf_token %}
+
+        {% if user_creation_form.non_field_errors or form.non_field_errors %}
+        <div class="form-grid-errors">
+            {{ user_creation_form.non_field_errors }}
+            {{ form.non_field_errors }}
+        </div>
+        {% endif %}
+
+        {% for hidden in user_creation_form.hidden_fields %}
+            {{ hidden }}
+        {% endfor %}
+        {% for hidden in form.hidden_fields %}
+            {{ hidden }}
+        {% endfor %}
+
+        {% for field in user_creation_form.visible_fields %}
+        <div class="form-grid-row">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            <div>
+                {{ field }}
+                {% for error in field.errors %}
+                    <div class="form-error">{{ error }}</div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+
+        {% for field in form.visible_fields %}
+        <div class="form-grid-row">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            <div>
+                {{ field }}
+                {% if field.help_text %}
+                    <div class="form-help">{{ field.help_text }}</div>
+                {% endif %}
+                {% for error in field.errors %}
+                    <div class="form-error">{{ error }}</div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+
+        <div class="form-grid-actions">
+            <button type="submit">Create Profile</button>
+        </div>
+    </form>
+</section>
+
+</section>
+
+{% endblock %}

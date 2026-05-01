@@ -1,0 +1,63 @@
+{% extends 'musicBlog/base.html' %}
+
+
+{% block content %}
+
+<title>home</title>
+
+<section class="home-shell">
+    <header class="home-header card">
+        <h1>Welcome to the music blog</h1>
+        {% if user.is_authenticated %}
+        <p>Hey {{ user.username }}!</p>
+        {% else %}
+        <p>Please <a href="{% url 'musicBlog:login' %}">Login</a> to access your profile and search music.</p>
+        {% endif %}
+    </header>
+
+    {% if user.is_authenticated %}
+    <section class="card home-links">
+        <h2>Quick Actions</h2>
+        <p><a href="{% url 'musicBlog:show_profile' %}">My Profile</a></p>
+        <p><a href="{% url 'musicBlog:find_friends' %}">Find Friends</a></p>
+        <p><a href="{% url 'musicBlog:discogs_search' %}">Search music</a></p>
+    </section>
+
+    <section class="card">
+        <h2>Recent Friend Reviews</h2>
+        {% if home_friend_reviews %}
+        <ul class="stack-list">
+            {% for review in home_friend_reviews %}
+            <li>
+                <strong><a href="{% url 'musicBlog:album_detail' review.album.pk %}">{{ review.album }}</a></strong>
+                reviewed by {{ review.profile.display_name|default:review.profile.username }}
+                &mdash; Rating: {{ review.rating }}/10<br>
+                {{ review.review_text }}
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>Your friends have not reviewed anything recently.</p>
+        {% endif %}
+    </section>
+    {% endif %}
+
+    <section class="card home-wide">
+        <h2>Hot Ratings!</h2>
+        {% if recent_top_albums %}
+        <ul class="stack-list">
+            {% for album in recent_top_albums %}
+            <li>
+                <a href="{% url 'musicBlog:album_detail' album.pk %}">{{ album.title }}</a>
+                by {{ album.artist.name }}
+                with {{ album.recent_rater_count }} recent rating{{ album.recent_rater_count|pluralize }}
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>No albums have been rated recently.</p>
+        {% endif %}
+    </section>
+</section>
+
+{% endblock %}

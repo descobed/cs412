@@ -1,0 +1,32 @@
+{% extends 'musicBlog/base.html' %}
+
+{% block content %}
+
+<title>{{ artist.name }}</title>
+
+<section class="home-shell">
+
+    <header class="card home-header">
+        <h1>{{ artist.name }}</h1>
+        {% if artist.genre %}<p>Genre: {{ artist.genre }}</p>{% endif %}
+        {% if artist.bio %}<p>{{ artist.bio }}</p>{% endif %}
+    </header>
+
+    <section class="card home-wide">
+        <h2>Albums</h2>
+        {% if albums %}
+        <ul class="stack-list">
+            {% for album in albums %}
+            <li>
+                <a href="{% url 'musicBlog:album_detail' album.pk %}">{{ album.title }}</a>
+                {% if album.release_date %}({{ album.release_date }}){% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>No albums listed for this artist yet.</p>
+        {% endif %}
+    </section>
+
+</section>
+{% endblock %}

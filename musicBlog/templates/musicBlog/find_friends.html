@@ -1,0 +1,58 @@
+{% extends 'musicBlog/base.html' %}
+
+{% block content %}
+
+<title>Find Friends</title>
+
+<section class="page-shell">
+
+    <header class="card">
+        <h1>Find Friends</h1>
+        {% if not profile %}
+        <p>Please log in!</p>
+        {% else %}
+        <form method="get">
+            <label for="q">Search profiles</label><br>
+            <input id="q" type="text" name="q" value="{{ q }}" placeholder="username or display name" style="margin-top:8px;">
+            <button type="submit">Find</button>
+        </form>
+        {% endif %}
+    </header>
+
+    {% if profile and q %}
+    <section class="card">
+        <h2>Results for "{{ q }}"</h2>
+        {% if search_results %}
+        <ul class="stack-list">
+            {% for candidate in search_results %}
+            <li>
+                <a href="{% url 'musicBlog:friend_profile' candidate.pk %}">
+                    {{ candidate.display_name|default:candidate.username }}
+                </a>
+                {% if candidate.pk in existing_friend_ids %}
+                    <span>&mdash; Already friends</span>
+                    <form method="post" action="{% url 'musicBlog:remove_friend' %}" style="display:inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="friend_profile_pk" value="{{ candidate.pk }}">
+                        <input type="hidden" name="next" value="{% url 'musicBlog:find_friends' %}?q={{ q|urlencode }}">
+                        <button type="submit">Remove Friend</button>
+                    </form>
+                {% else %}
+                    <form method="post" action="{% url 'musicBlog:add_friend' %}" style="display:inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="friend_profile_pk" value="{{ candidate.pk }}">
+                        <input type="hidden" name="next" value="{% url 'musicBlog:find_friends' %}?q={{ q|urlencode }}">
+                        <button type="submit">Add Friend</button>
+                    </form>
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>No matching profiles found.</p>
+        {% endif %}
+    </section>
+    {% endif %}
+
+</section>
+{% endblock %}

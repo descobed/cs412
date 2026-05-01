@@ -1,0 +1,54 @@
+{% extends 'musicBlog/base.html' %}
+
+{% block content %}
+
+<title>{{ album.title }}</title>
+
+<section class="home-shell">
+
+    <header class="card home-header">
+        <h1>{{ album.title }}</h1>
+        <p>Artist: <a href="{% url 'musicBlog:artist_detail' album.artist.pk %}">{{ album.artist }}</a></p>
+        {% if album.release_date %}<p>Released: {{ album.release_date }}</p>{% endif %}
+        {% if album.genre %}<p>Genre: {{ album.genre }}</p>{% endif %}
+        {% if album.cover_image_url %}
+            <img class="album-cover" src="{{ album.cover_image_url }}" alt="Cover image for {{ album.title }}">
+        {% endif %}
+    </header>
+
+    <section class="card">
+        <h2>Songs</h2>
+        {% if songs %}
+        <ol class="stack-list">
+            {% for song in songs %}
+            <li>{{ song.title }}{% if song.length %} &mdash; {{ song.length }}s{% endif %}</li>
+            {% endfor %}
+        </ol>
+        {% else %}
+        <p>No songs listed for this album.</p>
+        {% endif %}
+    </section>
+
+    <section class="card">
+        <h2>Reviews</h2>
+        {% if request.user.is_authenticated %}
+        <p><a href="{% url 'musicBlog:create_review' album.pk %}">Write a Review</a></p>
+        {% endif %}
+        {% if reviews %}
+        <ul class="stack-list">
+            {% for review in reviews %}
+            <li>
+                <strong>{{ review.rating }}/10</strong>
+                {% if review.profile %} by {{ review.profile.display_name|default:review.profile.username }}{% endif %}<br>
+                {{ review.review_text }}
+                {% if review.tags %}<br><em>Tags: {{ review.tags }}</em>{% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>No reviews yet. Be the first!</p>
+        {% endif %}
+    </section>
+
+</section>
+{% endblock %}

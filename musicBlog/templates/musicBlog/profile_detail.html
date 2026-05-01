@@ -1,0 +1,99 @@
+{% extends 'musicBlog/base.html' %}
+
+{% block content %}
+
+<title>{{ profile.display_name|default:user.username }}'s Profile</title>
+
+<section class="home-shell">
+
+    <header class="card home-header">
+        <h1>{{ profile.display_name|default:user.username }}</h1>
+        {% if profile %}
+        <p>Username: {{ profile.username }}</p>
+        {% if profile.bio_text %}<p>{{ profile.bio_text }}</p>{% endif %}
+        {% else %}
+        <p>No profile found for {{ user.username }}.</p>
+        {% endif %}
+    </header>
+
+    {% if profile %}
+    <section class="card">
+        <h2>Friends</h2>
+        <p><a href="{% url 'musicBlog:find_friends' %}">Find Friends</a></p>
+        {% if friendships %}
+        <ul class="stack-list">
+            {% for friendship in friendships %}
+            <li>
+                <a href="{% url 'musicBlog:friend_profile' friendship.friend_profile.pk %}">
+                    {{ friendship.friend_profile.display_name|default:friendship.friend_profile.username }}
+                </a>
+                <form method="post" action="{% url 'musicBlog:remove_friend' %}" style="display:inline;">
+                    {% csrf_token %}
+                    <input type="hidden" name="friend_profile_pk" value="{{ friendship.friend_profile.pk }}">
+                    <input type="hidden" name="next" value="{% url 'musicBlog:show_profile' %}">
+                    <button type="submit" style="padding-left: 15px;"> Remove</button>
+                </form>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>No friends added yet.</p>
+        {% endif %}
+    </section>
+
+    <section class="card">
+        <h2>Add a Friend</h2>
+        <form method="get" action="{% url 'musicBlog:find_friends' %}">
+            <label for="q">Search by username or display name:</label><br>
+            <input id="q" type="text" name="q" required style="margin-top:8px;">
+            <button type="submit">Search</button>
+        </form>
+    </section>
+
+    <section class="card home-wide">
+        <h2>Friends Are Reviewing</h2>
+        {% if friend_reviews %}
+        
+        <ul class="stack-list">
+            {% for review in friend_reviews %}
+            <li>
+                <strong><a href="{% url 'musicBlog:album_detail' review.album.pk %}">{{ review.album }}</a></strong>
+                reviewed by {{ review.profile.display_name|default:review.profile.username }}
+                Rating: {{ review.rating }}/10<br>
+                {{ review.review_text }}
+                {% if review.tags %}<br><em>Tags: {{ review.tags }}</em>{% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+        
+        {% else %}
+        <p>Your friends have not reviewed any albums yet.</p>
+        {% endif %}
+    </section>
+
+    <section class="card home-wide">
+        <h2>My Reviews</h2>
+        {% with reviews=profile.review_set.all %}
+        
+        {% if reviews %}
+        <ul class="stack-list">
+            {% for review in reviews %}
+            <li>
+                <strong><a href="{% url 'musicBlog:album_detail' review.album.pk %}">{{ review.album }}</a></strong>
+                Rating: {{ review.rating }}/10<br>
+                {{ review.review_text }}
+                {% if review.tags %}<br><em>Tags: {{ review.tags }}</em>{% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        
+        <p>No reviews yet.</p>
+        {% endif %}
+        {% endwith %}
+    
+    </section>
+    {% endif %}
+
+</section>
+{% endblock %}

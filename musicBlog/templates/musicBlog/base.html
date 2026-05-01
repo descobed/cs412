@@ -1,0 +1,39 @@
+{% load static %}
+
+<html>
+    <head>
+        <link rel="stylesheet" href="{% static 'custom_styles.css' %}">
+    </head>
+
+    <nav>
+        <ul class="nav-left">
+            <li><a href="{% url 'musicBlog:home' %}">Home</a></li>
+                <li><a href="{% url 'musicBlog:discogs_search' %}">Search</a></li>
+        </ul>
+        <ul class="nav-right">
+            {% if request.user.is_authenticated %}
+                <li>{{ request.user.username }}</li>
+                <li><a href="{% url 'musicBlog:show_profile' %}">My Profile</a></li>
+                <li>
+                    <form action="{% url 'musicBlog:logout' %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit">Logout</button>
+                    </form>
+                </li>
+            {% else %}
+                <li>Not logged in</li>
+                <li><a href="{% url 'musicBlog:login' %}">Login</a></li>
+                <li><a href="{% url 'musicBlog:create_profile' %}">Create Profile</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+
+    <body>
+
+    {% block content %}
+        <p>Base Template</p>
+    {% endblock %}
+
+    </body>
+
+</html>

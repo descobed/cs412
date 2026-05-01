@@ -1,0 +1,34 @@
+{% extends 'musicBlog/base.html' %}
+
+{% block content %}
+
+<title>{{ friend_profile.display_name|default:friend_profile.username }}'s Profile</title>
+<section class="page-shell">
+
+    <header class="card">
+        <h1>{{ friend_profile.display_name|default:friend_profile.username }}</h1>
+        <p>Username: {{ friend_profile.username }}</p>
+        {% if friend_profile.bio_text %}<p>{{ friend_profile.bio_text }}</p>{% endif %}
+        <p><a href="{% url 'musicBlog:find_friends' %}">&larr; Back to Find Friends</a></p>
+    </header>
+
+    <section class="card">
+        <h2>Reviews</h2>
+        {% if reviews %}
+        <ul class="stack-list">
+            {% for review in reviews %}
+            <li>
+                <strong><a href="{% url 'musicBlog:album_detail' review.album.pk %}">{{ review.album }}</a></strong>
+                &mdash; Rating: {{ review.rating }}/10<br>
+                {{ review.review_text }}
+                {% if review.tags %}<br><em>Tags: {{ review.tags }}</em>{% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>This friend has not posted reviews yet.</p>
+        {% endif %}
+    </section>
+
+</section>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends 'musicBlog/base.html' %}
+
+{% block content %}
+
+<title>Login</title>
+
+<section class="page-shell">
+
+<header class="card">
+    <h1>Login</h1>
+</header>
+
+<section class="card">
+    <form method="post" class="form-grid">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+        <div class="form-grid-errors">
+            {{ form.non_field_errors }}
+        </div>
+        {% endif %}
+
+        {% for field in form.visible_fields %}
+        <div class="form-grid-row">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            <div>
+                {{ field }}
+                {% if field.help_text %}
+                    <div class="form-help">{{ field.help_text }}</div>
+                {% endif %}
+
+            </div>
+        </div>
+        {% endfor %}
+
+        {% if request.GET.next %}
+            <input type="hidden" name="next" value="{{ request.GET.next }}">
+        {% else %}
+            <input type="hidden" name="next" value="{% url 'musicBlog:home' %}">
+        {% endif %}
+
+        <div class="form-grid-actions">
+            <input type="submit" value="Login">
+        </div>
+    </form>
+</section>
+
+</section>
+
+{% endblock %}
